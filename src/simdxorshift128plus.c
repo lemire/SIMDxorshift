@@ -112,7 +112,7 @@ void  avx_xorshift128plus_shuffle32(avx_xorshift128plus_key_t *key, uint32_t *st
           i--;
         }
         interval = _mm256_sub_epi32(interval,vec8);
-        __m256i R = avx_randombound_epu32( avx_xorshift128plus(key), interval);
+        R = avx_randombound_epu32( avx_xorshift128plus(key), interval);
         _mm256_storeu_si256((__m256i *)randomsource, R);
      }
 }
