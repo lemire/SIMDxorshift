@@ -20,10 +20,10 @@ xorshift128plus.o: ./src/xorshift128plus.c $(HEADERS)
 simdxorshift128plus.o: ./src/simdxorshift128plus.c $(HEADERS)
 	$(CC) $(CFLAGS) -c ./src/simdxorshift128plus.c -Iinclude
 
-fillarray: ./benchmark/fillarray.c $(HEADERS)
+fillarray: ./benchmark/fillarray.c $(HEADERS)  $(OBJECTS)
 	$(CC) $(CFLAGS) -o fillarray ./benchmark/fillarray.c $(OBJECTS) -Iinclude
 
-shuffle: ./benchmark/shuffle.c $(HEADERS)
+shuffle: ./benchmark/shuffle.c $(HEADERS)  $(OBJECTS)
 	$(CC) $(CFLAGS) -o shuffle ./benchmark/shuffle.c $(OBJECTS) -Iinclude
 
 
