@@ -94,7 +94,7 @@ int sortAndCompare(uint32_t * shuf, uint32_t * orig, uint32_t size) {
         do {                                                              \
             printf("%s: ", #test);                                        \
             fflush(NULL);                                                 \
-           for(int k = 0; k < 3; ++k){ uint64_t cycles_start, cycles_final, cycles_diff;             \
+           for(int k = 0; k < 1; ++k){ uint64_t cycles_start, cycles_final, cycles_diff;             \
             uint64_t min_diff = (uint64_t)-1;                             \
             for (int i = 0; i < repeat; i++) {                            \
                 pre;                                                       \
