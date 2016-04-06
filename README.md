@@ -27,6 +27,19 @@ upgrade.
 
 Your compiler supports C99, right?
 
+## Code sample
+
+```C
+#include "simdxorshift128plus.h"
+
+// create a new key
+avx_xorshift128plus_key_t mykey;
+avx_xorshift128plus_init(324,4444,&mykey); // values 324, 4444 are arbitrary, must be non-zero
+
+// generate 32 random bytes, do this as many times as you want
+__m256i randomstuff =  avx_xorshift128plus(&mykey);
+```
+
 ## Usage 
 
 ```bash
@@ -50,11 +63,12 @@ avx_xorshift128plus_shuffle32(&myavxkey,testvalues,size):  3.47 cycles per opera
 
 (Tests on a Skylake processor.)
 
+
 ## Shallow analysis
 
 SIMD random-number generation is something like twice as fast as plain C random number
 generation. However on algorithms such as random shuffling, the benefits of faster random number generation
-are lesser because other bottlenecks arise.
+are lesser because other bottlenecks arise. 
 
 For the most part however, the application of SIMD instructions for random number generation is "free"
 if the CPU supports it.
