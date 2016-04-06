@@ -27,6 +27,38 @@ upgrade.
 
 Your compiler supports C99, right?
 
+## Usage 
+
+```bash
+$ make
+$ ./fillarray
+Generating 5000 32-bit random numbers
+Time reported in number of cycles per array element.
+We store values to an array of size = 19 kB.
+
+We just generate the random numbers:
+populateRandom_xorshift128plus(prec,size):  3.36 cycles per operation
+populateRandom_avx_xorshift128plus(prec,size):  1.79 cycles per operation
+
+$ ./shuffle
+Shuffling arrays of size 10000
+Time reported in number of cycles per array element.
+Tests assume that array is in cache as much as possible.
+xorshift128plus_shuffle32(&mykey,testvalues,size):  4.67 cycles per operation
+avx_xorshift128plus_shuffle32(&myavxkey,testvalues,size):  3.47 cycles per operation
+```
+
+(Tests on a Skylake processor.)
+
+## Shallow analysis
+
+SIMD random-number generation is something like twice as fast as plain C random number
+generation. However on algorithms such as random shuffling, the benefits of faster random number generation
+are lesser because other bottlenecks arise.
+
+For the most part however, the application of SIMD instructions for random number generation is "free"
+if the CPU supports it.
+
 
 ## Reference
 
