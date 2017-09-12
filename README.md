@@ -11,7 +11,8 @@ We present   a vectorized version of xorshift128+, a popular random-number gener
 part of this family. It is written in C. The implementation uses Intel's SIMD
 instructions and is based on Vigna's original (pure C) implementation.
 
-As a random number generator, xorshift128+ is not very strong. It should never be
+As a random number generator, xorshift128+ is not very strong. [It fails statistical
+tests such as BigCrush](https://lemire.me/blog/2017/09/08/the-xorshift128-random-number-generator-fails-bigcrush/). It should never be
 used alone in applications where the quality of the random numbers matters a great
 deal. However, when you just want fast and "good enough" random numbers, it should
 do well.
