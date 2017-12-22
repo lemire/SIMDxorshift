@@ -22,11 +22,11 @@ it further using vector instructions.
 
 ## Prerequisite
 
-You should have a recent Intel processor (Haswell or better). If you bought you
+You should have a recent Intel processor (Haswell or better). If you bought your
 PC before everyone on Earth had a smartphone, it is probably too old a PC. Please
 upgrade.
 
-Your compiler supports C99, right?
+Your compiler supports C99, right? C99 stands for 1999. That was almost 20 years ago.
 
 ## Code sample
 
