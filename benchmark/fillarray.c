@@ -59,6 +59,45 @@ void populateRandom_avx_xorshift128plus_two(uint32_t *answer, uint32_t size) {
   }
 }
 
+void populateRandom_avx_xorshift128plus_four(uint32_t *answer, uint32_t size) {
+  uint32_t i = 0;
+  avx_xorshift128plus_key_t mykey1;
+  avx_xorshift128plus_init(324, 4444, &mykey1);
+  avx_xorshift128plus_key_t mykey2;
+  avx_xorshift128plus_init(3244444, 444774, &mykey2);
+  avx_xorshift128plus_key_t mykey3;
+  avx_xorshift128plus_init(324444444, 4244774, &mykey3);
+  avx_xorshift128plus_key_t mykey4;
+  avx_xorshift128plus_init(324422444, 4447274, &mykey4);
+
+  const uint32_t block = sizeof(__m256i) / sizeof(uint32_t); // 8
+  while (i + 4 * block <= size) {
+    _mm256_storeu_si256((__m256i *)(answer + i), avx_xorshift128plus(&mykey1));
+    _mm256_storeu_si256((__m256i *)(answer + i + block),
+                        avx_xorshift128plus(&mykey2));
+    _mm256_storeu_si256((__m256i *)(answer + i + 2 * block),
+                        avx_xorshift128plus(&mykey3));
+    _mm256_storeu_si256((__m256i *)(answer + i + 3 * block),
+                        avx_xorshift128plus(&mykey4));
+    i += 4 * block;
+  }
+  while (i + 2 * block <= size) {
+    _mm256_storeu_si256((__m256i *)(answer + i), avx_xorshift128plus(&mykey1));
+    _mm256_storeu_si256((__m256i *)(answer + i + block),
+                        avx_xorshift128plus(&mykey2));
+    i += 2 * block;
+  }
+  while (i + block <= size) {
+    _mm256_storeu_si256((__m256i *)(answer + i), avx_xorshift128plus(&mykey1));
+    i += block;
+  }
+  if (i != size) {
+    uint32_t buffer[sizeof(__m256i) / sizeof(uint32_t)];
+    _mm256_storeu_si256((__m256i *)buffer, avx_xorshift128plus(&mykey1));
+    memcpy(answer + i, buffer, sizeof(uint32_t) * (size - i));
+  }
+}
+
 #define RDTSC_START(cycles)                                                    \
   do {                                                                         \
     register unsigned cyc_high, cyc_low;                                       \
