@@ -74,6 +74,9 @@ are lesser because other bottlenecks arise.
 For the most part however, the application of SIMD instructions for random number generation is "free"
 if the CPU supports it.
 
+## Related work
+
+* [Vectorized version of the PCG random number generator](https://github.com/lemire/simdpcg)
 
 ## Reference
 
