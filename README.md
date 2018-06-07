@@ -51,18 +51,12 @@ Time reported in number of cycles per array element.
 We store values to an array of size = 19 kB.
 
 We just generate the random numbers:
-populateRandom_xorshift128plus(prec,size):  3.36 cycles per operation
-populateRandom_avx_xorshift128plus(prec,size):  1.79 cycles per operation
-
-$ ./shuffle
-Shuffling arrays of size 10000
-Time reported in number of cycles per array element.
-Tests assume that array is in cache as much as possible.
-xorshift128plus_shuffle32(&mykey,testvalues,size):  4.67 cycles per operation
-avx_xorshift128plus_shuffle32(&myavxkey,testvalues,size):  3.47 cycles per operation
+populateRandom_xorshift128plus(prec,size):  3.63 cycles per operation
+populateRandom_avx_xorshift128plus(prec,size):  2.21 cycles per operation
+populateRandom_avx_xorshift128plus_two(prec,size):  1.89 cycles per operation
 ```
 
-(Tests on a Skylake processor.)
+(Tests on a Skylake-X processor.)
 
 
 ## Shallow analysis
