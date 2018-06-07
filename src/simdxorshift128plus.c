@@ -57,6 +57,37 @@ __m256i avx_xorshift128plus(avx_xorshift128plus_key_t *key) {
 	return _mm256_add_epi64(key->part2, s0);
 }
 
+#if defined(__AVX512F__) 
+
+void avx512_xorshift128plus_init(uint64_t key1, uint64_t key2, 
+		avx512_xorshift128plus_key_t *key) {
+	uint64_t S0[8];
+	uint64_t S1[8];
+	S0[0] = key1;
+	S1[0] = key2;
+        // todo: fix this so that the init is correct
+	xorshift128plus_jump_onkeys(*S0, *S1, S0 + 1, S1 + 1);
+	xorshift128plus_jump_onkeys(*(S0 + 1), *(S1 + 1), S0 + 2, S1 + 2);
+	xorshift128plus_jump_onkeys(*(S0 + 2), *(S1 + 2), S0 + 3, S1 + 3);
+	key->part1 = _mm512_loadu_si512((const __m512i *) S0);
+	key->part2 = _mm512_loadu_si512((const __m512i *) S1);
+}
+/*
+ Return a 512-bit random "number"
+ */
+__m512i avx512_xorshift128plus(avx512_xorshift128plus_key_t *key) {
+	__m512i s1 = key->part1;
+	const __m512i s0 = key->part2;
+	key->part1 = key->part2;
+	s1 = _mm512_xor_si512(key->part2, _mm512_slli_epi64(key->part2, 23));
+	key->part2 = _mm512_xor_si512(
+			_mm512_xor_si512(_mm512_xor_si512(s1, s0),
+					_mm512_srli_epi64(s1, 18)), _mm512_srli_epi64(s0, 5));
+	return _mm512_add_epi64(key->part2, s0);
+}
+
+#endif
+
 /**
  * equivalent to skipping 2^64 avx_xorshift128plus() calls
  * useful to generate a new key from an existing one (multi-threaded context).

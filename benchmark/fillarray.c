@@ -58,6 +58,78 @@ void populateRandom_avx_xorshift128plus_two(uint32_t *answer, uint32_t size) {
     memcpy(answer + i, buffer, sizeof(uint32_t) * (size - i));
   }
 }
+#if defined(__AVX512F__)
+void populateRandom_avx512_xorshift128plus_two(uint32_t *answer,
+                                               uint32_t size) {
+  uint32_t i = 0;
+  avx512_xorshift128plus_key_t mykey1;
+  avx512_xorshift128plus_init(324, 4444, &mykey1);
+  avx512_xorshift128plus_key_t mykey2;
+  avx512_xorshift128plus_init(3244444, 444774, &mykey2);
+
+  const uint32_t block = sizeof(__m512i) / sizeof(uint32_t); // 16
+  while (i + 2 * block <= size) {
+    _mm512_storeu_si512((__m512i *)(answer + i),
+                        avx512_xorshift128plus(&mykey1));
+    _mm512_storeu_si512((__m512i *)(answer + i + block),
+                        avx512_xorshift128plus(&mykey2));
+    i += 2 * block;
+  }
+  while (i + block <= size) {
+    _mm512_storeu_si512((__m512i *)(answer + i),
+                        avx512_xorshift128plus(&mykey1));
+    i += block;
+  }
+  if (i != size) {
+    uint32_t buffer[sizeof(__m512i) / sizeof(uint32_t)];
+    _mm512_storeu_si512((__m512i *)buffer, avx512_xorshift128plus(&mykey1));
+    memcpy(answer + i, buffer, sizeof(uint32_t) * (size - i));
+  }
+}
+void populateRandom_avx512_xorshift128plus_four(uint32_t *answer,
+                                                uint32_t size) {
+  uint32_t i = 0;
+  avx512_xorshift128plus_key_t mykey1;
+  avx512_xorshift128plus_init(324, 4444, &mykey1);
+  avx512_xorshift128plus_key_t mykey2;
+  avx512_xorshift128plus_init(3244444, 444774, &mykey2);
+  avx512_xorshift128plus_key_t mykey3;
+  avx512_xorshift128plus_init(53244444, 5444774, &mykey3);
+  avx512_xorshift128plus_key_t mykey4;
+  avx512_xorshift128plus_init(13244444, 4444774, &mykey4);
+
+  const uint32_t block = sizeof(__m512i) / sizeof(uint32_t); // 16
+  while (i + 4 * block <= size) {
+    _mm512_storeu_si512((__m512i *)(answer + i),
+                        avx512_xorshift128plus(&mykey1));
+    _mm512_storeu_si512((__m512i *)(answer + i + block),
+                        avx512_xorshift128plus(&mykey2));
+    _mm512_storeu_si512((__m512i *)(answer + i + 2 * block),
+                        avx512_xorshift128plus(&mykey3));
+    _mm512_storeu_si512((__m512i *)(answer + i + 3 * block),
+                        avx512_xorshift128plus(&mykey4));
+    i += 4 * block;
+  }
+  while (i + 2 * block <= size) {
+    _mm512_storeu_si512((__m512i *)(answer + i),
+                        avx512_xorshift128plus(&mykey1));
+    _mm512_storeu_si512((__m512i *)(answer + i + block),
+                        avx512_xorshift128plus(&mykey2));
+    i += 2 * block;
+  }
+  while (i + block <= size) {
+    _mm512_storeu_si512((__m512i *)(answer + i),
+                        avx512_xorshift128plus(&mykey1));
+    i += block;
+  }
+  if (i != size) {
+    uint32_t buffer[sizeof(__m512i) / sizeof(uint32_t)];
+    _mm512_storeu_si512((__m512i *)buffer, avx512_xorshift128plus(&mykey1));
+    memcpy(answer + i, buffer, sizeof(uint32_t) * (size - i));
+  }
+}
+
+#endif
 
 void populateRandom_avx_xorshift128plus_four(uint32_t *answer, uint32_t size) {
   uint32_t i = 0;
@@ -162,6 +234,16 @@ void demo(int size) {
   BEST_TIME(populateRandom_xorshift128plus(prec, size), , repeat, size);
   BEST_TIME(populateRandom_avx_xorshift128plus(prec, size), , repeat, size);
   BEST_TIME(populateRandom_avx_xorshift128plus_two(prec, size), , repeat, size);
+// BEST_TIME(populateRandom_avx_xorshift128plus_four(prec, size), , repeat,
+// size);
+#if defined(__AVX512F__)
+  BEST_TIME(populateRandom_avx512_xorshift128plus_two(prec, size), , repeat,
+            size);
+// BEST_TIME(populateRandom_avx512_xorshift128plus_four(prec, size), , repeat,
+// size);
+#else
+  printf("AVX-512 not available.\n");
+#endif
   free(prec);
   printf("\n");
 }

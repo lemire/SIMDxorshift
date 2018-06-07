@@ -72,4 +72,40 @@ void avx_xorshift128plus_jump(avx_xorshift128plus_key_t * key);
  */
 void  avx_xorshift128plus_shuffle32(avx_xorshift128plus_key_t *key, uint32_t *storage, uint32_t size);
 
+#if defined(__AVX512F__) 
+
+struct avx512_xorshift128plus_key_s {
+    __m512i part1;
+    __m512i part2;
+};
+
+typedef struct avx512_xorshift128plus_key_s avx512_xorshift128plus_key_t;
+
+
+
+/**
+* You can create a new key like so...
+*  avx_xorshift128plus_key_t mykey;
+*  avx_xorshift128plus_init(324,4444,&mykey);
+*
+* This feeds the two integers (324 and 4444) as seeds to the random
+* number generator.
+*
+*  Then you can generate random numbers like so...
+*      avx_xorshift128plus(&mykey);
+* If your application is threaded, each thread should have its own
+* key.
+*
+*
+* The seeds (key1 and key2) should be non-zero. You are responsible for
+* checking that they are non-zero.
+*/
+void avx512_xorshift128plus_init(uint64_t key1, uint64_t key2, avx512_xorshift128plus_key_t *key);
+
+/*
+Return a 256-bit random "number"
+*/
+__m512i avx512_xorshift128plus( avx512_xorshift128plus_key_t *key);
+
+#endif
 #endif

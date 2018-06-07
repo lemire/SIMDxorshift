@@ -46,15 +46,16 @@ __m256i randomstuff =  avx_xorshift128plus(&mykey);
 ```bash
 $ make
 $ ./fillarray
-$ ./fillarray
 Generating 5000 32-bit random numbers
 Time reported in number of cycles per array element.
 We store values to an array of size = 19 kB.
 
 We just generate the random numbers:
 populateRandom_xorshift128plus(prec, size):  3.63 cycles per operation
-populateRandom_avx_xorshift128plus(prec, size):  2.27 cycles per operation
-populateRandom_avx_xorshift128plus_two(prec, size):  1.98 cycles per operation
+populateRandom_avx_xorshift128plus(prec, size):  2.21 cycles per operation
+populateRandom_avx_xorshift128plus_two(prec, size):  1.88 cycles per operation
+populateRandom_avx512_xorshift128plus_two(prec, size):  1.47 cycles per operation
+
 ```
 
 (Tests on a Skylake-X processor.)
