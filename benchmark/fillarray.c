@@ -249,6 +249,6 @@ void demo(int size) {
 }
 
 int main() {
-  demo(5000);
+  demo(50000);
   return 0;
 }
