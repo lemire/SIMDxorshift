@@ -124,7 +124,7 @@ static __m256i avx_randombound_epu32(__m256i randomvals, __m256i upperbound) {
 			_mm256_mul_epu32(randomvals, upperbound), 32);
 	/* four other values */
 	__m256i oddparts = _mm256_mul_epu32(_mm256_srli_epi64(randomvals, 32),
-			upperbound);
+			_mm256_srli_epi64(upperbound, 32));
 	/* note:shift could be replaced by shuffle */
 	/* need to blend the eight values */
 	return _mm256_blend_epi32(evenparts, oddparts, 0b10101010);
