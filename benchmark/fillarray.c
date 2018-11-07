@@ -4,6 +4,7 @@
 
 #include "simdxorshift128plus.h"
 #include "xorshift128plus.h"
+#include "simdaesdragontamer.h"
 
 void populateRandom_xorshift128plus(uint32_t *answer, uint32_t size) {
   xorshift128plus_key_t mykey = {.part1 = 324, .part2 = 4444};
@@ -15,6 +16,23 @@ void populateRandom_xorshift128plus(uint32_t *answer, uint32_t size) {
   }
   if (i != 0)
     answer[size - i] = (uint32_t)xorshift128plus(&mykey);
+}
+
+void populateRandom_avx_aesdragontamer(uint32_t *answer, uint32_t size) {
+  uint32_t i = 0;
+  aesdragontamer_state mykey;
+  aesdragontamer_seed_r(324, 4444, &mykey);
+
+  const uint32_t block = sizeof(__m256i) / sizeof(uint32_t); // 8
+  while (i + block <= size) {
+    _mm256_storeu_si256((__m256i *)(answer + i), aesdragontamer_r(&mykey));
+    i += block;
+  }
+  if (i != size) {
+    uint32_t buffer[sizeof(__m256i) / sizeof(uint32_t)];
+    _mm256_storeu_si256((__m256i *)buffer, aesdragontamer_r(&mykey));
+    memcpy(answer + i, buffer, sizeof(uint32_t) * (size - i));
+  }
 }
 
 void populateRandom_avx_xorshift128plus(uint32_t *answer, uint32_t size) {
@@ -232,15 +250,12 @@ void demo(int size) {
   uint32_t *prec = malloc(size * sizeof(uint32_t));
   printf("\nWe just generate the random numbers: \n");
   BEST_TIME(populateRandom_xorshift128plus(prec, size), , repeat, size);
+  BEST_TIME(populateRandom_avx_aesdragontamer(prec, size), , repeat, size);
   BEST_TIME(populateRandom_avx_xorshift128plus(prec, size), , repeat, size);
   BEST_TIME(populateRandom_avx_xorshift128plus_two(prec, size), , repeat, size);
-// BEST_TIME(populateRandom_avx_xorshift128plus_four(prec, size), , repeat,
-// size);
 #if defined(__AVX512F__)
   BEST_TIME(populateRandom_avx512_xorshift128plus_two(prec, size), , repeat,
             size);
-// BEST_TIME(populateRandom_avx512_xorshift128plus_four(prec, size), , repeat,
-// size);
 #else
   printf("AVX-512 not available.\n");
 #endif
