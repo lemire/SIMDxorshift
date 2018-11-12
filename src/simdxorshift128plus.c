@@ -113,9 +113,13 @@ void avx_xorshift128plus_jump(avx_xorshift128plus_key_t * key) {
  *
  *     ( randomval * bound ) >> 32
  *
- * This approach generates a very slight bias, but if you
- * are using an xorshift random number generator, it is probably
- * the last of concerns.
+ * This approach generates a very slight bias (of the order of bound/2**32), but 
+ * in a high performance
+ * setting, it is probably quite acceptable.
+ *
+ * Reference : Daniel Lemire, Fast Random Integer Generation in an Interval
+ * ACM Transactions on Modeling and Computer Simulation (to appear)
+ * https://arxiv.org/abs/1805.10941
  *
  */
 static __m256i avx_randombound_epu32(__m256i randomvals, __m256i upperbound) {
