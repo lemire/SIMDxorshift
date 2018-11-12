@@ -107,15 +107,15 @@ void avx_xorshift128plus_jump(avx_xorshift128plus_key_t * key) {
 
 /**
  * Given 8 random 32-bit integers in randomvals,
- * derive 8 random 32-bit integers that are less than equal
- * than the 32-bit integers in upperbound using the
+ * derive 8 random 32-bit integers that are less than
+ * the 32-bit integers in upperbound using the
  * following heuristic:
  *
- *     ( randomval * bound ) >> 32
+ *     ( randomval * upperbound ) >> 32
  *
- * This approach generates a very slight bias (of the order of bound/2**32), but 
- * in a high performance
- * setting, it is probably quite acceptable.
+ * This approach generates a very slight bias (of the order of upperbound/2**32), but 
+ * in a high performance setting, it is probably quite acceptable, and preferable
+ * to branching.
  *
  * Reference : Daniel Lemire, Fast Random Integer Generation in an Interval
  * ACM Transactions on Modeling and Computer Simulation (to appear)
