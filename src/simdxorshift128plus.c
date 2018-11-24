@@ -65,10 +65,18 @@ void avx512_xorshift128plus_init(uint64_t key1, uint64_t key2,
 	uint64_t S1[8];
 	S0[0] = key1;
 	S1[0] = key2;
-        // todo: fix this so that the init is correct
+	
+	// todo: fix this so that the init is correct
+	// GJ - All elements should now be initialized
 	xorshift128plus_jump_onkeys(*S0, *S1, S0 + 1, S1 + 1);
 	xorshift128plus_jump_onkeys(*(S0 + 1), *(S1 + 1), S0 + 2, S1 + 2);
 	xorshift128plus_jump_onkeys(*(S0 + 2), *(S1 + 2), S0 + 3, S1 + 3);
+	xorshift128plus_jump_onkeys(*(S0 + 3), *(S1 + 3), S0 + 4, S1 + 4);
+	xorshift128plus_jump_onkeys(*(S0 + 4), *(S1 + 4), S0 + 5, S1 + 5);
+	xorshift128plus_jump_onkeys(*(S0 + 5), *(S1 + 5), S0 + 6, S1 + 6);
+	xorshift128plus_jump_onkeys(*(S0 + 6), *(S1 + 6), S0 + 7, S1 + 7);
+
+
 	key->part1 = _mm512_loadu_si512((const __m512i *) S0);
 	key->part2 = _mm512_loadu_si512((const __m512i *) S1);
 }
