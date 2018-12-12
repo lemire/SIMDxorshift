@@ -22,7 +22,7 @@ static inline __m256i aesdragontamer_r(aesdragontamer_state *state) {
   __m128i penultimate = _mm_aesenc_si128(state->state, state->increment); 
   __m128i penultimate1 = _mm_aesenc_si128(penultimate, state->increment); 
   __m128i penultimate2 = _mm_aesdec_si128(penultimate, state->increment); 
-  return _mm256_set_m128i(penultimate1,penultimate2);
+  return _mm256_insertf128_si256(_mm256_castsi128_si256(penultimate2), penultimate1, 1);
 }
 
 
