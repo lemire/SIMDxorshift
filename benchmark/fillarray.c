@@ -246,17 +246,21 @@ void demo(int size) {
   printf("Time reported in number of cycles per array element.\n");
   printf("We store values to an array of size = %lu kB.\n",
          size * sizeof(uint32_t) / (1024));
-  int repeat = 500;
+  int repeat = 50;
   uint32_t *prec = malloc(size * sizeof(uint32_t));
   printf("\nWe just generate the random numbers: \n");
   BEST_TIME(populateRandom_xorshift128plus(prec, size), , repeat, size);
+  if(prec[1] == 0) printf("%u\n",prec[1]);
   BEST_TIME(populateRandom_avx_aesdragontamer(prec, size), , repeat, size);
+  if(prec[1] == 0) printf("%u\n",prec[1]);
   BEST_TIME(populateRandom_avx_xorshift128plus(prec, size), , repeat, size);
+  if(prec[1] == 0) printf("%u\n",prec[1]);
   BEST_TIME(populateRandom_avx_xorshift128plus_two(prec, size), , repeat, size);
 #if defined(__AVX512F__)
   BEST_TIME(populateRandom_avx512_xorshift128plus_two(prec, size), , repeat,
             size);
-#else
+  if(prec[1] == 0) printf("%u\n",prec[1]);
+ #else
   printf("AVX-512 not available.\n");
 #endif
   free(prec);
