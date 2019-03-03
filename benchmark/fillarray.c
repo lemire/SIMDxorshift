@@ -248,7 +248,10 @@ void demo(int size) {
          size * sizeof(uint32_t) / (1024));
   int repeat = 50;
   uint32_t *prec = malloc(size * sizeof(uint32_t));
+  uint32_t *tmp = malloc(size * sizeof(uint32_t));
+  for(size_t i = 0; i < size; i++) tmp[i] = i;
   printf("\nWe just generate the random numbers: \n");
+  BEST_TIME(memcpy(prec,tmp,size * sizeof(uint32_t)), , repeat, size);
   BEST_TIME(populateRandom_xorshift128plus(prec, size), , repeat, size);
   if(prec[1] == 0) printf("%u\n",prec[1]);
   BEST_TIME(populateRandom_avx_aesdragontamer(prec, size), , repeat, size);
@@ -264,6 +267,7 @@ void demo(int size) {
   printf("AVX-512 not available.\n");
 #endif
   free(prec);
+  free(tmp);
   printf("\n");
 }
 
