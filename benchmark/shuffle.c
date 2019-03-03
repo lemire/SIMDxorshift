@@ -137,6 +137,7 @@ void demo(int size) {
 
 int main() {
     demo(10000);
+    demo(1000000);
     return 0;
 }
 
