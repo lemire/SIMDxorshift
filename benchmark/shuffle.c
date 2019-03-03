@@ -4,6 +4,7 @@
 
 #include "simdxorshift128plus.h"
 #include "xorshift128plus.h"
+#include "simdaesdragontamer.h"
 
 #define RDTSC_START(cycles)                                                   \
     do {                                                                      \
@@ -128,7 +129,8 @@ void demo(int size) {
     if(sortAndCompare(testvalues, pristinecopy, size)!=0) return;
     BEST_TIME(avx_xorshift128plus_shuffle32(&myavxkey,testvalues,size), array_cache_prefetch(testvalues,size), repeat, size);
     if(sortAndCompare(testvalues, pristinecopy, size)!=0) return;
-    free(testvalues);
+    BEST_TIME(aesdragontamer_shuffle32(&g_aesdragontamer_state,testvalues,size), array_cache_prefetch(testvalues,size), repeat, size);
+     free(testvalues);
     free(pristinecopy);
     printf("\n");
 }
