@@ -144,6 +144,11 @@ static __m256i avx_randombound_epu32(__m256i randomvals, __m256i upperbound) {
 
 void avx_xorshift128plus_shuffle32(avx_xorshift128plus_key_t *key,
 		uint32_t *storage, uint32_t size) {
+	avx_xorshift128plus_shuffle32_partial(key, storage, size, 1);
+}
+
+void avx_xorshift128plus_shuffle32_partial(avx_xorshift128plus_key_t *key,
+		uint32_t *storage, uint32_t size, uint32_t lower_index_inclusive) {
 	uint32_t i;
 	uint32_t randomsource[8];
 	__m256i interval = _mm256_setr_epi32(size, size - 1, size - 2, size - 3,
@@ -151,7 +156,7 @@ void avx_xorshift128plus_shuffle32(avx_xorshift128plus_key_t *key,
 	__m256i R = avx_randombound_epu32(avx_xorshift128plus(key), interval);
 	_mm256_storeu_si256((__m256i *) randomsource, R);
 	__m256i vec8 = _mm256_set1_epi32(8);
-	for (i = size; i > 1;) {
+	for (i = size; i > (lower_index_inclusive+8);) {
 		for (int j = 0; j < 8; ++j) {
 			uint32_t nextpos = randomsource[j];
 			int tmp = storage[i - 1]; // likely in cache
@@ -163,5 +168,13 @@ void avx_xorshift128plus_shuffle32(avx_xorshift128plus_key_t *key,
 		interval = _mm256_sub_epi32(interval, vec8);
 		R = avx_randombound_epu32(avx_xorshift128plus(key), interval);
 		_mm256_storeu_si256((__m256i *) randomsource, R);
+	}
+	for (int j=0; i > lower_index_inclusive; ++j) {
+		uint32_t nextpos = randomsource[j];
+		int tmp = storage[i - 1]; // likely in cache
+		int val = storage[nextpos]; // could be costly
+		storage[i - 1] = val;
+		storage[nextpos] = tmp; // you might have to read this store later
+		i--;
 	}
 }
