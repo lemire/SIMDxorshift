@@ -48,9 +48,14 @@ static uint32_t xorshift128plus_bounded(xorshift128plus_key_t * key, uint32_t bo
 
 /* Fisher-Yates shuffle, shuffling an array of integers, uses the provided key */
 void  xorshift128plus_shuffle32(xorshift128plus_key_t * key, uint32_t *storage, uint32_t size) {
+    xorshift128plus_shuffle32_partial(key, storage, size, 1);
+}
+
+void  xorshift128plus_shuffle32_partial(xorshift128plus_key_t * key, uint32_t *storage, uint32_t size, uint32_t lower_index_inclusive) {
     uint32_t i;
     uint32_t nextpos1, nextpos2;
-    for (i=size; i>2; i-=2) {
+    if (lower_index_inclusive==0) lower_index_inclusive=1;
+    for (i=size; i>(lower_index_inclusive+1); i-=2) {
     	xorshift128plus_bounded_two_by_two(key,i,i-1,&nextpos1,&nextpos2);
         const uint32_t tmp1 = storage[i-1];// likely in cache
         const uint32_t val1 = storage[nextpos1]; // could be costly
@@ -63,7 +68,7 @@ void  xorshift128plus_shuffle32(xorshift128plus_key_t * key, uint32_t *storage, 
         storage[nextpos2] = tmp2; // you might have to read this store later
 
     }
-    if(i>1) {
+    if(i>lower_index_inclusive) {
     	const uint32_t nextpos = xorshift128plus_bounded(key,i);
     	const uint32_t tmp = storage[i-1];// likely in cache
     	const uint32_t val = storage[nextpos]; // could be costly
