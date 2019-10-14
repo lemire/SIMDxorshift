@@ -249,7 +249,7 @@ void demo(int size) {
   int repeat = 50;
   uint32_t *prec = malloc(size * sizeof(uint32_t));
   uint32_t *tmp = malloc(size * sizeof(uint32_t));
-  for(size_t i = 0; i < size; i++) tmp[i] = i;
+  for(size_t i = 0; i < (size_t)size; i++) tmp[i] = i;
   printf("\nWe just generate the random numbers: \n");
   BEST_TIME(memcpy(prec,tmp,size * sizeof(uint32_t)), , repeat, size);
   BEST_TIME(populateRandom_xorshift128plus(prec, size), , repeat, size);

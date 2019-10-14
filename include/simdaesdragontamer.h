@@ -54,7 +54,7 @@ static __m256i avx_dragonrandombound_epu32(__m256i randomvals, __m256i upperboun
 			_mm256_srli_epi64(upperbound, 32));
 	/* note:shift could be replaced by shuffle */
 	/* need to blend the eight values */
-	return _mm256_blend_epi32(evenparts, oddparts, 0b10101010);
+	return _mm256_blend_epi32(evenparts, oddparts, 170); //170 == 0b10101010
 }
 
 void aesdragontamer_shuffle32(aesdragontamer_state *key,
