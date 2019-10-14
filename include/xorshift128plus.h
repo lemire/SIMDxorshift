@@ -55,4 +55,7 @@ void xorshift128plus_jump(xorshift128plus_key_t * key);
 /* Fisher-Yates shuffle, shuffling an array of 32-bit values, uses the provided key */
 void  xorshift128plus_shuffle32(xorshift128plus_key_t * key, uint32_t *storage, uint32_t size);
 
+/* Partial Fisher-Yates shuffle, shuffling  "size" 32-bit  values in "storage". You must provide the key for randomness. Applies shuffle to elements in [lower_index_inclusive, size). */
+void  xorshift128plus_shuffle32_partial(xorshift128plus_key_t * key, uint32_t *storage, uint32_t size, uint32_t lower_index_inclusive);
+
 #endif

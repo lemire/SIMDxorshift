@@ -72,6 +72,12 @@ void avx_xorshift128plus_jump(avx_xorshift128plus_key_t * key);
  */
 void  avx_xorshift128plus_shuffle32(avx_xorshift128plus_key_t *key, uint32_t *storage, uint32_t size);
 
+/**
+ * Partial Fisher-Yates shuffle, shuffling  "size" 32-bit  values in "storage". You must provide the key for
+ * randomness. Stops shuffling after finalizing all elements in [lower_index_inclusive, size).
+ */
+void  avx_xorshift128plus_shuffle32_partial(avx_xorshift128plus_key_t *key, uint32_t *storage, uint32_t size, uint32_t lower_index_inclusive);
+
 #if defined(__AVX512F__) 
 
 struct avx512_xorshift128plus_key_s {
