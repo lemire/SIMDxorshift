@@ -20,6 +20,8 @@ do well.
 Since speed is the primary benefit of xorshift128+, then it is tempting to accelerate
 it further using vector instructions.
 
+[This library is used by the Yandex ClickHouse high-performance data engine](https://github.com/ClickHouse/ClickHouse).
+
 ## Prerequisite
 
 You should have a recent Intel processor (Haswell or better). If you bought your
